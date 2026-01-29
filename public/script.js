@@ -1,9 +1,13 @@
-const API_URL = 'http://localhost:5000/api';
+// Use relative API URLs for deployment compatibility
+const API_URL = '/api';
 
 // Load projects
 async function loadProjects() {
   try {
     const response = await fetch(`${API_URL}/projects`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
     const projects = await response.json();
     
     const container = document.getElementById('projectsContainer');
@@ -33,6 +37,9 @@ async function loadProjects() {
 async function loadClients() {
   try {
     const response = await fetch(`${API_URL}/clients`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
     const clients = await response.json();
     
     const container = document.getElementById('clientsContainer');
