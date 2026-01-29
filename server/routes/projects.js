@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db/database');
 const multer = require('multer');
-const sharp = require('sharp');
 const path = require('path');
 const fs = require('fs');
 
@@ -21,10 +20,10 @@ router.get('/', (req, res) => {
   });
 });
 
-// Add a new project with image cropping
+// Add a new project with image upload
 router.post('/', upload.single('image'), async (req, res) => {
   try {
-    const { name, description, cropX, cropY, cropWidth, cropHeight } = req.body;
+    const { name, description } = req.body;
     
     if (!req.file) {
       return res.status(400).json({ error: 'No image provided' });
@@ -40,34 +39,10 @@ router.post('/', upload.single('image'), async (req, res) => {
       fs.mkdirSync(uploadsDir, { recursive: true });
     }
 
-    // Process image with cropping if crop parameters provided
-    let processedImage = req.file.buffer;
-    
-    if (cropX && cropY && cropWidth && cropHeight) {
-      processedImage = await sharp(req.file.buffer)
-        .extract({
-          left: parseInt(cropX),
-          top: parseInt(cropY),
-          width: parseInt(cropWidth),
-          height: parseInt(cropHeight)
-        })
-        .jpeg({ quality: 90 })
-        .toBuffer();
-    } else {
-      // Resize to 450x350 if no crop specified
-      processedImage = await sharp(req.file.buffer)
-        .resize(450, 350, {
-          fit: 'cover',
-          position: 'center'
-        })
-        .jpeg({ quality: 90 })
-        .toBuffer();
-    }
-
-    // Save image
+    // Save image without processing
     const filename = `project_${Date.now()}.jpg`;
     const filepath = path.join(uploadsDir, filename);
-    fs.writeFileSync(filepath, processedImage);
+    fs.writeFileSync(filepath, req.file.buffer);
 
     // Store in database
     const imageUrl = `/uploads/${filename}`;
