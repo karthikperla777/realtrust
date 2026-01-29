@@ -49,7 +49,8 @@ function initializeDatabase() {
       if (err) console.error('Error creating clients table:', err);
       else {
         console.log('Clients table ready');
-        addSampleClients();
+        // Don't call addSampleClients to avoid Sharp crashes
+        checkAndAddSampleClients();
       }
     });
 
@@ -132,60 +133,64 @@ function addSampleProjects() {
   });
 }
 
-function addSampleClients() {
+function checkAndAddSampleClients() {
   db.get('SELECT COUNT(*) as count FROM clients', (err, row) => {
     if (!err && row && row.count === 0) {
-      const sampleClients = [
-        {
-          name: 'Roshan Smith',
-          designation: 'CEO at TechCorp',
-          description: 'Excellent service and professional team. Highly recommended!',
-          image: '/uploads/sample-client-1.jpg'
-        },
-        {
-          name: 'Shipra Koyel',
-          designation: 'Marketing Director',
-          description: 'Great experience working with this talented team.',
-          image: '/uploads/sample-client-2.jpg'
-        },
-        {
-          name: 'John Legore',
-          designation: 'Business Owner',
-          description: 'Outstanding results and exceptional customer support.',
-          image: '/uploads/sample-client-3.jpg'
-        },
-        {
-          name: 'Mary Freeman',
-          designation: 'Project Manager',
-          description: 'Professional, creative, and results-driven approach.',
-          image: '/uploads/sample-client-4.jpg'
-        },
-        {
-          name: 'Lucy Davis',
-          designation: 'Creative Lead',
-          description: 'Impressive work quality and timely delivery.',
-          image: '/uploads/sample-client-5.jpg'
-        }
-      ];
-
-      let inserted = 0;
-      sampleClients.forEach((client) => {
-        db.run(
-          'INSERT INTO clients (name, description, designation, image) VALUES (?, ?, ?, ?)',
-          [client.name, client.description, client.designation, client.image],
-          function(err) {
-            if (err) {
-              console.error('Error inserting client:', err);
-            } else {
-              inserted++;
-              if (inserted === sampleClients.length) {
-                console.log('All sample clients added successfully');
-              }
-            }
-          }
-        );
-      });
+      addSampleClients();
     }
+  });
+}
+
+function addSampleClients() {
+  const sampleClients = [
+    {
+      name: 'Roshan Smith',
+      designation: 'CEO at TechCorp',
+      description: 'Excellent service and professional team. Highly recommended!',
+      image: '/uploads/sample-client-1.jpg'
+    },
+    {
+      name: 'Shipra Koyel',
+      designation: 'Marketing Director',
+      description: 'Great experience working with this talented team.',
+      image: '/uploads/sample-client-2.jpg'
+    },
+    {
+      name: 'John Legore',
+      designation: 'Business Owner',
+      description: 'Outstanding results and exceptional customer support.',
+      image: '/uploads/sample-client-3.jpg'
+    },
+    {
+      name: 'Mary Freeman',
+      designation: 'Project Manager',
+      description: 'Professional, creative, and results-driven approach.',
+      image: '/uploads/sample-client-4.jpg'
+    },
+    {
+      name: 'Lucy Davis',
+      designation: 'Creative Lead',
+      description: 'Impressive work quality and timely delivery.',
+      image: '/uploads/sample-client-5.jpg'
+    }
+  ];
+
+  let inserted = 0;
+  sampleClients.forEach((client) => {
+    db.run(
+      'INSERT INTO clients (name, description, designation, image) VALUES (?, ?, ?, ?)',
+      [client.name, client.description, client.designation, client.image],
+      function(err) {
+        if (err) {
+          console.error('Error inserting client:', err);
+        } else {
+          inserted++;
+          if (inserted === sampleClients.length) {
+            console.log('All sample clients added successfully');
+          }
+        }
+      }
+    );
   });
 }
 
