@@ -7,6 +7,7 @@ const projectRoutes = require('./routes/projects');
 const clientRoutes = require('./routes/clients');
 const contactRoutes = require('./routes/contacts');
 const newsletterRoutes = require('./routes/newsletter');
+const db = require('./db/database');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -42,8 +43,32 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal Server Error' });
 });
 
-app.listen(PORT, () => {
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', port: PORT });
+});
+
+const server = app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
   console.log(`Landing page: http://localhost:${PORT}`);
   console.log(`Admin panel: http://localhost:${PORT}/admin`);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received, shutting down gracefully');
+  server.close(() => {
+    console.log('Server closed');
+    db.close();
+    process.exit(0);
+  });
+});
+
+process.on('SIGINT', () => {
+  console.log('SIGINT received, shutting down gracefully');
+  server.close(() => {
+    console.log('Server closed');
+    db.close();
+    process.exit(0);
+  });
 });

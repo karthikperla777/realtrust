@@ -2,57 +2,82 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
 const dbPath = path.join(__dirname, '../../data.db');
-const db = new sqlite3.Database(dbPath, (err) => {
-  if (err) {
-    console.error('Database connection error:', err.message);
-  } else {
-    console.log('Connected to SQLite database at', dbPath);
-    initializeDatabase();
-  }
-});
+
+let db = null;
+
+try {
+  db = new sqlite3.Database(dbPath, (err) => {
+    if (err) {
+      console.error('Database connection error:', err.message);
+      process.exit(1);
+    } else {
+      console.log('Connected to SQLite database at', dbPath);
+      initializeDatabase();
+    }
+  });
+} catch (error) {
+  console.error('Fatal error creating database:', error.message);
+  process.exit(1);
+}
 
 function initializeDatabase() {
-  // Projects table
-  db.run(`CREATE TABLE IF NOT EXISTS projects (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    description TEXT NOT NULL,
-    image TEXT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  )`, (err) => {
-    if (err) console.error('Error creating projects table:', err);
-    else addSampleProjects();
-  });
+  try {
+    // Projects table
+    db.run(`CREATE TABLE IF NOT EXISTS projects (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      description TEXT NOT NULL,
+      image TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`, (err) => {
+      if (err) console.error('Error creating projects table:', err);
+      else {
+        console.log('Projects table ready');
+        addSampleProjects();
+      }
+    });
 
-  // Clients table
-  db.run(`CREATE TABLE IF NOT EXISTS clients (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    description TEXT NOT NULL,
-    designation TEXT NOT NULL,
-    image TEXT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  )`, (err) => {
-    if (err) console.error('Error creating clients table:', err);
-    else addSampleClients();
-  });
+    // Clients table
+    db.run(`CREATE TABLE IF NOT EXISTS clients (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      description TEXT NOT NULL,
+      designation TEXT NOT NULL,
+      image TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`, (err) => {
+      if (err) console.error('Error creating clients table:', err);
+      else {
+        console.log('Clients table ready');
+        addSampleClients();
+      }
+    });
 
-  // Contact submissions table
-  db.run(`CREATE TABLE IF NOT EXISTS contacts (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    full_name TEXT NOT NULL,
-    email TEXT NOT NULL,
-    mobile_number TEXT NOT NULL,
-    city TEXT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  )`);
+    // Contact submissions table
+    db.run(`CREATE TABLE IF NOT EXISTS contacts (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      full_name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      mobile_number TEXT NOT NULL,
+      city TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`, (err) => {
+      if (err) console.error('Error creating contacts table:', err);
+      else console.log('Contacts table ready');
+    });
 
-  // Newsletter subscribers table
-  db.run(`CREATE TABLE IF NOT EXISTS newsletter (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    email TEXT UNIQUE NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  )`);
+    // Newsletter subscribers table
+    db.run(`CREATE TABLE IF NOT EXISTS newsletter (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      email TEXT UNIQUE NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`, (err) => {
+      if (err) console.error('Error creating newsletter table:', err);
+      else console.log('Newsletter table ready');
+    });
+  } catch (error) {
+    console.error('Error during database initialization:', error.message);
+  }
 }
 
 function addSampleProjects() {
