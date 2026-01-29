@@ -9,6 +9,10 @@ yarn-debug.log*
 yarn-error.log*
 server/uploads/*
 !server/uploads/.gitkeep
+!server/uploads/*.jpg
+!server/uploads/*.avif
+!server/uploads/*.png
+!server/uploads/*.jpeg
 .vscode/
 .idea/
 dist/
