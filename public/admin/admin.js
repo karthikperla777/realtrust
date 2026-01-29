@@ -1,4 +1,5 @@
-const API_URL = 'http://localhost:5000/api';
+// Use relative API URL so admin panel works when deployed
+const API_URL = '/api';
 
 // Tab Navigation
 document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -130,6 +131,7 @@ projectFormEl.addEventListener('submit', async (e) => {
 async function loadProjects() {
   try {
     const response = await fetch(`${API_URL}/projects`);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const projects = await response.json();
     
     const container = document.getElementById('projectsList');
@@ -264,6 +266,7 @@ clientFormEl.addEventListener('submit', async (e) => {
 async function loadClients() {
   try {
     const response = await fetch(`${API_URL}/clients`);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const clients = await response.json();
     
     const container = document.getElementById('clientsList');
