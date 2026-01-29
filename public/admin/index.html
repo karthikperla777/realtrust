@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <!-- Admin Header -->
+  <header class="admin-header">
+    <div class="container">
+      <div class="admin-header-content">
+        <h1 class="logo">Admin Panel</h1>
+        <nav class="admin-nav">
+          <a href="/">Back to Landing Page</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Admin Navigation -->
+  <div class="admin-container">
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <button class="nav-btn active" data-tab="projects">
+          <span>📊</span> Projects
+        </button>
+        <button class="nav-btn" data-tab="clients">
+          <span>👥</span> Clients
+        </button>
+        <button class="nav-btn" data-tab="contacts">
+          <span>📬</span> Contacts
+        </button>
+        <button class="nav-btn" data-tab="newsletter">
+          <span>📧</span> Newsletter
+        </button>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <!-- Projects Tab -->
+      <section id="projects-tab" class="tab-content active">
+        <div class="tab-header">
+          <h2>Projects Management</h2>
+          <button class="btn btn-primary" id="addProjectBtn">+ Add Project</button>
+        </div>
+
+        <!-- Add Project Form -->
+        <div id="projectForm" class="form-container hidden">
+          <h3>Add New Project</h3>
+          <form id="projectFormEl">
+            <div class="form-group">
+              <label for="projectName">Project Name</label>
+              <input type="text" id="projectName" required>
+            </div>
+
+            <div class="form-group">
+              <label for="projectDesc">Description</label>
+              <textarea id="projectDesc" required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="projectImage">Project Image</label>
+              <input type="file" id="projectImage" accept="image/*" required>
+              <div id="projectImagePreview" class="image-preview hidden">
+                <img id="projectPreviewImg" src="" alt="Preview">
+                <div class="crop-controls">
+                  <p>Crop Image (Optional)</p>
+                  <label>X: <input type="number" id="projectCropX" min="0"></label>
+                  <label>Y: <input type="number" id="projectCropY" min="0"></label>
+                  <label>Width: <input type="number" id="projectCropWidth" value="450" min="1"></label>
+                  <label>Height: <input type="number" id="projectCropHeight" value="350" min="1"></label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Save Project</button>
+              <button type="button" class="btn btn-secondary" id="cancelProjectBtn">Cancel</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Projects List -->
+        <div id="projectsList" class="items-list">
+          <p class="loading">Loading projects...</p>
+        </div>
+      </section>
+
+      <!-- Clients Tab -->
+      <section id="clients-tab" class="tab-content">
+        <div class="tab-header">
+          <h2>Clients Management</h2>
+          <button class="btn btn-primary" id="addClientBtn">+ Add Client</button>
+        </div>
+
+        <!-- Add Client Form -->
+        <div id="clientForm" class="form-container hidden">
+          <h3>Add New Client</h3>
+          <form id="clientFormEl">
+            <div class="form-group">
+              <label for="clientName">Client Name</label>
+              <input type="text" id="clientName" required>
+            </div>
+
+            <div class="form-group">
+              <label for="clientDesignation">Designation</label>
+              <input type="text" id="clientDesignation" placeholder="e.g., CEO, Designer" required>
+            </div>
+
+            <div class="form-group">
+              <label for="clientDesc">Description</label>
+              <textarea id="clientDesc" required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="clientImage">Client Image</label>
+              <input type="file" id="clientImage" accept="image/*" required>
+              <div id="clientImagePreview" class="image-preview hidden">
+                <img id="clientPreviewImg" src="" alt="Preview">
+                <div class="crop-controls">
+                  <p>Crop Image (Optional)</p>
+                  <label>X: <input type="number" id="clientCropX" min="0"></label>
+                  <label>Y: <input type="number" id="clientCropY" min="0"></label>
+                  <label>Width: <input type="number" id="clientCropWidth" value="450" min="1"></label>
+                  <label>Height: <input type="number" id="clientCropHeight" value="350" min="1"></label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Save Client</button>
+              <button type="button" class="btn btn-secondary" id="cancelClientBtn">Cancel</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Clients List -->
+        <div id="clientsList" class="items-list">
+          <p class="loading">Loading clients...</p>
+        </div>
+      </section>
+
+      <!-- Contacts Tab -->
+      <section id="contacts-tab" class="tab-content">
+        <div class="tab-header">
+          <h2>Contact Form Submissions</h2>
+        </div>
+
+        <div id="contactsList" class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <th>City</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="contactsTableBody">
+              <tr><td colspan="6" class="loading">Loading contacts...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Newsletter Tab -->
+      <section id="newsletter-tab" class="tab-content">
+        <div class="tab-header">
+          <h2>Newsletter Subscribers</h2>
+        </div>
+
+        <div id="newsletterList" class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Email Address</th>
+                <th>Subscription Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="newsletterTableBody">
+              <tr><td colspan="3" class="loading">Loading subscribers...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
