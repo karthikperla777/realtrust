@@ -33,7 +33,7 @@ function initializeDatabase() {
       if (err) console.error('Error creating projects table:', err);
       else {
         console.log('Projects table ready');
-        addSampleProjects();
+        setTimeout(() => addSampleProjects(), 100);
       }
     });
 
@@ -49,8 +49,7 @@ function initializeDatabase() {
       if (err) console.error('Error creating clients table:', err);
       else {
         console.log('Clients table ready');
-        // Don't call addSampleClients to avoid Sharp crashes
-        checkAndAddSampleClients();
+        setTimeout(() => checkAndAddSampleClients(), 100);
       }
     });
 
