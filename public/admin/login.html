@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .login-container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 450px;
+      padding: 40px;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .login-header h1 {
+      color: #333;
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .login-header p {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .password-mismatch {
+      display: none;
+      color: #e74c3c;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    .form-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+      border-bottom: 2px solid #eee;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 12px;
+      background: none;
+      border: none;
+      color: #999;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+    }
+
+    .tab-btn.active {
+      color: #667eea;
+      border-bottom-color: #667eea;
+    }
+
+    .form-content {
+      display: none;
+    }
+
+    .form-content.active {
+      display: block;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .error-message {
+      display: none;
+      background-color: #fee;
+      color: #e74c3c;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      border-left: 4px solid #e74c3c;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    .success-message {
+      display: none;
+      background-color: #efe;
+      color: #27ae60;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      border-left: 4px solid #27ae60;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      color: #667eea;
+      margin-top: 10px;
+    }
+
+    .loading.show {
+      display: block;
+    }
+
+    .back-link {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .back-link a {
+      color: #667eea;
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.3s;
+    }
+
+    .back-link a:hover {
+      color: #764ba2;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-header">
+      <h1>Admin Panel</h1>
+      <p>Sign in or create an account</p>
+    </div>
+
+    <div class="form-tabs">
+      <button class="tab-btn active" onclick="switchTab('signin')">Sign In</button>
+      <button class="tab-btn" onclick="switchTab('signup')">Sign Up</button>
+    </div>
+
+    <!-- Sign In Form -->
+    <form id="signinForm" class="form-content active">
+      <div class="error-message" id="signinError"></div>
+      <div class="success-message" id="signinSuccess"></div>
+
+      <div class="form-group">
+        <label for="signinEmail">Email</label>
+        <input type="email" id="signinEmail" required placeholder="Enter your email">
+      </div>
+
+      <div class="form-group">
+        <label for="signinPassword">Password</label>
+        <input type="password" id="signinPassword" required placeholder="Enter your password">
+      </div>
+
+      <button type="submit" class="submit-btn" id="signinBtn">Sign In</button>
+      <div class="loading" id="signinLoading">Signing in...</div>
+    </form>
+
+    <!-- Sign Up Form -->
+    <form id="signupForm" class="form-content">
+      <div class="error-message" id="signupError"></div>
+      <div class="success-message" id="signupSuccess"></div>
+
+      <div class="form-group">
+        <label for="signupEmail">Email</label>
+        <input type="email" id="signupEmail" required placeholder="Enter your email">
+      </div>
+
+      <div class="form-group">
+        <label for="signupPassword">Password</label>
+        <input type="password" id="signupPassword" required placeholder="At least 6 characters">
+      </div>
+
+      <div class="form-group">
+        <label for="signupConfirmPassword">Confirm Password</label>
+        <input type="password" id="signupConfirmPassword" required placeholder="Confirm your password">
+        <div class="password-mismatch" id="passwordMismatch">Passwords do not match</div>
+      </div>
+
+      <button type="submit" class="submit-btn" id="signupBtn">Sign Up</button>
+      <div class="loading" id="signupLoading">Creating account...</div>
+    </form>
+
+    <div class="back-link">
+      <a href="/">← Back to Home</a>
+    </div>
+  </div>
+
+  <script src="login.js"></script>
+</body>
+</html>

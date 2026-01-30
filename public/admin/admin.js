@@ -1,5 +1,61 @@
 // Use relative API URL so admin panel works when deployed
 const API_URL = '/api';
+const AUTH_API_URL = '/api/auth';
+
+// Check authentication on page load
+document.addEventListener('DOMContentLoaded', () => {
+  checkAuth();
+  setupLogout();
+});
+
+function checkAuth() {
+  const token = localStorage.getItem('authToken');
+  const user = localStorage.getItem('user');
+
+  if (!token || !user) {
+    // No token, redirect to login
+    redirectToLogin();
+    return;
+  }
+
+  // Verify token is still valid
+  fetch(`${AUTH_API_URL}/verify-token`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        // Token is valid, display user email
+        const userData = JSON.parse(user);
+        document.getElementById('userEmail').textContent = userData.email;
+      } else {
+        // Token is invalid
+        redirectToLogin();
+      }
+    })
+    .catch(() => {
+      redirectToLogin();
+    });
+}
+
+function redirectToLogin() {
+  localStorage.removeItem('authToken');
+  localStorage.removeItem('user');
+  window.location.href = '/admin/login.html';
+}
+
+function setupLogout() {
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
+      window.location.href = '/admin/login.html';
+    });
+  }
+}
 
 // Tab Navigation
 document.querySelectorAll('.nav-btn').forEach(btn => {

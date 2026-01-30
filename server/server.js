@@ -7,6 +7,7 @@ const projectRoutes = require('./routes/projects');
 const clientRoutes = require('./routes/clients');
 const contactRoutes = require('./routes/contacts');
 const newsletterRoutes = require('./routes/newsletter');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -43,6 +44,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.use('/uploads', express.static(path.join(__dirname, './uploads')));
 
 // API Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/clients', clientRoutes);
 app.use('/api/contacts', contactRoutes);
